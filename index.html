@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mangan District GLOF Risk &amp; Early Warning Portal | Academic Research Prototype</title>
+
+  <!-- External CDNs: FontAwesome, Leaflet, Chart.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Application Stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+  <!-- Top Academic Demonstration Safety Mode Banner -->
+  <div class="mode-safety-banner" id="mode-safety-banner">
+    <div class="banner-inner">
+      <span class="mode-pill demo"><i class="fa-solid fa-triangle-exclamation"></i> DEMONSTRATION – simulated data</span>
+      <span class="banner-text">Academic Research &amp; Methodology Prototype (SSDMA / DDMA Mangan Study Context). Not an official operational warning system. Zero live telemetry connected.</span>
+      <span class="banner-flag" id="banner-config-mode">CONFIG: DEMO_SIMULATION</span>
+    </div>
+  </div>
+
+  <!-- Academic Research Portal Header -->
+  <header class="gov-header">
+    <div class="gov-branding">
+      <div class="emblem-icon">
+        <i class="fa-solid fa-mountain-city"></i>
+      </div>
+      <div class="title-group">
+        <h1>
+          MANGAN DISTRICT GLOF RESEARCH &amp; EARLY WARNING STUDY
+          <span class="sub-tag">Academic Research Prototype</span>
+        </h1>
+        <p>Glacial Lake Outburst Flood (GLOF) Multi-Lake Hazard, FAHP Risk Modeling &amp; EWS Architecture (Dissertation Review Draft)</p>
+      </div>
+    </div>
+    <div class="header-status-bar">
+      <div class="system-clock" id="system-clock-display">
+        <i class="fa-solid fa-clock"></i> Loading System Time...
+      </div>
+      <div class="status-badge simulated" id="system-status-badge">
+        <i class="fa-solid fa-flask" style="font-size: 9px;"></i> SIMULATED (0/6 LIVE)
+      </div>
+      <button class="btn-authority-gmap" id="btn-header-gmap" onclick="window.ManganMapManager.openCurrentInGoogleMaps()" title="Open coordinates in Google Maps for terrain inspection">
+        <i class="fa-brands fa-google"></i> Google Maps Coordinates ↗
+      </button>
+      <button class="btn-emergency-broadcast draft-preview-btn" id="btn-emergency-broadcast" onclick="window.ManganApp.openEmergencyBroadcastModal()" title="Preview alert template (Simulation only - does not send alerts)">
+        <i class="fa-solid fa-file-pen"></i> Draft Broadcast Preview <span class="draft-tag">SIMULATION</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Quick Stats Command Ticker Bar -->
+  <div class="command-ticker-bar">
+    <div class="ticker-item">
+      <i class="fa-solid fa-layer-group" style="color:var(--accent-blue);"></i>
+      <span>Mapped Inventory: <strong>440 Lakes</strong> <span class="accent-val">(30.71 km²)</span></span>
+    </div>
+    <div class="ticker-item">
+      <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i>
+      <span>FAHP Evaluated: <strong>51 Lakes</strong> <span style="color:#ef4444; font-weight:bold;">(7 Very High)</span></span>
+    </div>
+    <div class="ticker-item">
+      <i class="fa-solid fa-tower-cell" style="color:#eab308;"></i>
+      <span>IoT EWS Nodes: <strong style="color:#eab308;" id="ticker-sensor-count">6 Defined Stations (0 Live / Simulated)</strong></span>
+    </div>
+    <div class="ticker-item">
+      <i class="fa-solid fa-bullseye" style="color:var(--accent-cyan);"></i>
+      <span>Primary Risk Target: <strong>South Lhonak Lake</strong> <span class="accent-val">[Lake-48 | FAHP #1]</span></span>
+    </div>
+    <div class="ticker-item">
+      <i class="fa-solid fa-flask" style="color:#38bdf8;"></i>
+      <span>OPERATING STATE: <strong style="color:#38bdf8;">SIMULATED DATASET</strong></span>
+    </div>
+  </div>
+
+  <!-- Primary Navigation Tabs -->
+  <nav class="nav-tab-bar">
+    <button class="tab-btn active" data-tab="tab-map-ews">
+      <i class="fa-solid fa-map-location-dot"></i> Live GIS Map &amp; Multi-Lake EWS
+    </button>
+    <button class="tab-btn" data-tab="tab-hydrology">
+      <i class="fa-solid fa-chart-line"></i> Hydrological &amp; Outburst Hydrograph
+    </button>
+    <button class="tab-btn" data-tab="tab-vulnerability">
+      <i class="fa-solid fa-shield-halved"></i> 51 Glacial Lakes FAHP Risk Matrix (Gaikwad 2025)
+    </button>
+    <button class="tab-btn" data-tab="tab-governance">
+      <i class="fa-solid fa-clipboard-check"></i> Public Grievance &amp; Audit Log
+    </button>
+  </nav>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+
+    <!-- TAB 1: Live GIS Map & IoT EWS Grid -->
+    <div class="tab-pane active" id="tab-map-ews">
+      <div class="dashboard-grid">
+
+        <!-- Left Panel: Multi-Lake Selection & GLOF Simulator Controls -->
+        <div class="panel-left">
+
+          <!-- District & Research Summary -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <span class="panel-title"><i class="fa-solid fa-landmark"></i> Sikkim Glacial Lakes Inventory</span>
+            </div>
+            <div style="font-size:0.82rem; color:var(--text-muted);">
+              <p style="margin:2px 0;"><strong>Mapped Lakes (2020):</strong> 440 Glacial Lakes (30.71 km²)</p>
+              <p style="margin:2px 0;"><strong>GLOF Prone Evaluated:</strong> 51 Lakes (≥ 0.02 km²)</p>
+              <p style="margin:2px 0;"><strong>Very High Hazard Lakes:</strong> <span
+                  style="color:#ef4444; font-weight:bold;">7 Lakes (13.7%)</span></p>
+              <p style="margin:2px 0;"><strong>Very High Risk Lakes:</strong> <span
+                  style="color:#b91c1c; font-weight:bold;">6 Lakes (MC-LCP Model)</span></p>
+            </div>
+          </div>
+
+          <!-- Multi-Lake Simulator Controls Form -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <span class="panel-title"><i class="fa-solid fa-sliders"></i> Multi-Lake GLOF Breach Simulator</span>
+            </div>
+
+            <!-- Target Glacial Lake Selector -->
+            <div class="sim-form-group" style="margin-bottom:12px;">
+              <label style="font-weight:bold; color:var(--accent-cyan); display:block; margin-bottom:4px;">
+                <i class="fa-solid fa-water"></i> Target Glacial Lake (Gaikwad et al. 2025):
+              </label>
+              <select id="sim-target-lake"
+                style="width:100%; background:var(--bg-primary); color:#fff; border:1px solid var(--accent-cyan); padding:8px; border-radius:6px; font-family:var(--font-body); font-size:0.85rem; font-weight:bold; cursor:pointer;">
+                <!-- Populated via app.js -->
+              </select>
+            </div>
+
+            <!-- Research Lake Metadata Profile Card -->
+            <div id="target-lake-profile-card"
+              style="background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.25); border-radius:6px; padding:10px; margin-bottom:12px; font-size:0.8rem; color:var(--text-main);">
+              <!-- Rendered via app.js -->
+            </div>
+
+            <!-- Quick Disaster Scenario Presets -->
+            <div style="margin-bottom:14px; background:rgba(0,0,0,0.25); padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.06);">
+              <label style="font-size:0.73rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-muted); font-weight:bold; display:block; margin-bottom:8px;">
+                <i class="fa-solid fa-bolt" style="color:#f59e0b;"></i> Quick Scenario Presets:
+              </label>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+                <button type="button" class="preset-scenario-btn active" data-preset="LHONAK_2023" onclick="window.ManganApp.applyScenarioPreset('LHONAK_2023')">
+                  <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i> 2023 South Lhonak
+                </button>
+                <button type="button" class="preset-scenario-btn" data-preset="MONSOON_EXTREME" onclick="window.ManganApp.applyScenarioPreset('MONSOON_EXTREME')">
+                  <i class="fa-solid fa-cloud-bolt" style="color:#f97316;"></i> Monsoon Cataclysm
+                </button>
+                <button type="button" class="preset-scenario-btn" data-preset="GURUDONGMAR_SURGE" onclick="window.ManganApp.applyScenarioPreset('GURUDONGMAR_SURGE')">
+                  <i class="fa-solid fa-mountain" style="color:#38bdf8;"></i> Gurudongmar Surge
+                </button>
+                <button type="button" class="preset-scenario-btn" data-preset="BASELINE_WATCH" onclick="window.ManganApp.applyScenarioPreset('BASELINE_WATCH')">
+                  <i class="fa-solid fa-shield-halved" style="color:#10b981;"></i> Normal Baseline
+                </button>
+              </div>
+            </div>
+
+            <div class="sim-form-group">
+              <label>Outburst Lake Volume (V): <span class="sim-value-badge" id="sim-lake-vol-val">54.2
+                  MCM</span></label>
+              <input type="range" id="sim-lake-vol" min="5" max="80" step="0.5" value="54.2">
+            </div>
+
+            <div class="sim-form-group">
+              <label>Moraine Breach Height (h): <span class="sim-value-badge" id="sim-breach-height-val">45
+                  m</span></label>
+              <input type="range" id="sim-breach-height" min="10" max="90" step="5" value="45">
+            </div>
+
+            <div class="sim-form-group">
+              <label>Monsoon Rainfall Forcing: <span class="sim-value-badge" id="sim-rain-forcing-val">120
+                  mm/day</span></label>
+              <input type="range" id="sim-rain-forcing" min="0" max="300" step="10" value="120">
+            </div>
+
+            <button class="btn-trigger-sim" id="btn-run-sim">
+              <i class="fa-solid fa-play"></i> Run Hydrodynamic Outburst Model
+            </button>
+          </div>
+
+          <!-- Live Prediction Summary Metrics -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <span class="panel-title"><i class="fa-solid fa-gauge-high"></i> Outburst Flow &amp; Impact Metrics</span>
+            </div>
+
+            <div class="metrics-summary-grid">
+              <div class="metric-card">
+                <span class="metric-label">Outburst Velocity Flow</span>
+                <span class="metric-value" id="metric-flow-velocity" style="color:var(--accent-cyan)">-- m/s</span>
+                <span class="metric-subtext">Peak Surge Velocity ($v_{\text{peak}}$)</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Peak Outflow ($Q_p$)</span>
+                <span class="metric-value" id="metric-peak-flow" style="color:var(--alert-critical)">-- m³/s</span>
+                <span class="metric-subtext">Froehlich Outburst Formula</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Chungthang Dam ETA</span>
+                <span class="metric-value" id="metric-chungthang-eta" style="color:var(--accent-cyan)">-- Mins</span>
+                <span class="metric-subtext">Confluence Flood Wave</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Population at Risk</span>
+                <span class="metric-value" id="metric-pop-at-risk" style="color:var(--alert-warning)">--</span>
+                <span class="metric-subtext">Mangan &amp; Dzongu Corridors</span>
+              </div>
+              <div class="metric-card" style="grid-column: span 2;">
+                <span class="metric-label">Overall Risk Level</span>
+                <span class="metric-value" id="metric-hazard-status" style="font-size:0.9rem;">NORMAL</span>
+                <span class="metric-subtext">Integrated FAHP &amp; Flow Velocity Matrix</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Middle Panel: Leaflet OpenStreetMap GIS Container -->
+        <div class="panel-middle">
+          <div class="map-panel">
+            <div id="leaflet-map"></div>
+
+            <!-- Layer Control & Hazard Filter Overlay -->
+            <div class="map-control-overlay">
+              <span class="overlay-section-header">
+                <i class="fa-brands fa-google" style="color:#4285F4;"></i> Google Maps (Authority Mode)
+              </span>
+              <button class="layer-toggle-btn active" data-basemap="Google Hybrid" onclick="window.ManganMapManager.switchBaseMap('Google Hybrid', this)">
+                <i class="fa-brands fa-google" style="color:#34A853;"></i> Google Hybrid
+                <span class="badge-recom">RECOMMENDED</span>
+              </button>
+              <button class="layer-toggle-btn" data-basemap="Google Terrain" onclick="window.ManganMapManager.switchBaseMap('Google Terrain', this)">
+                <i class="fa-solid fa-mountain-sun" style="color:#FBBC05;"></i> Google Terrain (Himalaya)
+              </button>
+              <button class="layer-toggle-btn" data-basemap="Google Streets" onclick="window.ManganMapManager.switchBaseMap('Google Streets', this)">
+                <i class="fa-solid fa-road" style="color:#4285F4;"></i> Google Roads &amp; Towns
+              </button>
+              <button class="layer-toggle-btn" data-basemap="Google Satellite" onclick="window.ManganMapManager.switchBaseMap('Google Satellite', this)">
+                <i class="fa-solid fa-satellite" style="color:#EA4335;"></i> Google Satellite (Pure)
+              </button>
+
+              <button class="layer-toggle-btn btn-open-external-gmap" onclick="window.ManganMapManager.openCurrentInGoogleMaps()" title="Open live coordinate footprint directly in official Google Maps">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Open in Google Maps ↗
+              </button>
+
+              <span class="overlay-section-header" style="margin-top:6px;">
+                <i class="fa-solid fa-layer-group"></i> Alternate GIS Basemaps
+              </span>
+              <button class="layer-toggle-btn" data-basemap="OpenStreetMap" onclick="window.ManganMapManager.switchBaseMap('OpenStreetMap', this)">
+                <i class="fa-solid fa-map"></i> OSM HOT (Disaster Relief)
+              </button>
+              <button class="layer-toggle-btn" data-basemap="ESRI Satellite" onclick="window.ManganMapManager.switchBaseMap('ESRI Satellite', this)">
+                <i class="fa-solid fa-globe"></i> ESRI World Imagery
+              </button>
+              <button class="layer-toggle-btn" data-basemap="Topographic" onclick="window.ManganMapManager.switchBaseMap('Topographic', this)">
+                <i class="fa-solid fa-mountain"></i> ESRI Topo Contours
+              </button>
+
+              <span class="overlay-section-header" style="margin-top:8px;">
+                <i class="fa-solid fa-filter"></i> FAHP Hazard Filter
+              </span>
+              <button class="layer-toggle-btn active" onclick="window.ManganMapManager.filterByHazard('ALL', this)">
+                <i class="fa-solid fa-layer-group"></i> All 15 Lakes
+              </button>
+              <button class="layer-toggle-btn" onclick="window.ManganMapManager.filterByHazard('VERY_HIGH', this)">
+                <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i> Very High Hazard
+              </button>
+              <button class="layer-toggle-btn" onclick="window.ManganMapManager.filterByHazard('HIGH', this)">
+                <i class="fa-solid fa-circle-exclamation" style="color:#f97316;"></i> High Hazard
+              </button>
+            </div>
+
+            <!-- Active Lake Velocity Map Overlay Box -->
+            <div id="map-velocity-legend"
+              style="position:absolute; top:12px; left:12px; z-index:1000; background:rgba(15,23,42,0.92); border:1px solid rgba(6,182,212,0.4); backdrop-filter:blur(8px); padding:10px 14px; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.5); min-width:240px;">
+              <!-- Rendered via map.js updateInundationOverlay -->
+            </div>
+
+            <!-- Map Legend -->
+            <div class="map-legend">
+              <span style="font-weight:bold; margin-bottom:4px; color:#fff; font-size:0.8rem;">Gaikwad et al. (2025) GIS
+                Legend</span>
+              <div class="legend-item">
+                <div class="legend-color" style="background:#ef4444;"></div> Very High Hazard Lake (FAHP Rank 1-10)
+              </div>
+              <div class="legend-item">
+                <div class="legend-color" style="background:#f97316;"></div> High Hazard Lake
+              </div>
+              <div class="legend-item">
+                <div class="legend-color" style="background:#0284c7;"></div> Teesta River &amp; Sub-basins
+              </div>
+              <div class="legend-item">
+                <div class="legend-color" style="background:#10b981;"></div> IoT EWS Sensor Grid
+              </div>
+              <div class="legend-item">
+                <div class="legend-color" style="background:#f59e0b;"></div> Hydro Assets (Teesta III &amp; V)
+              </div>
+              <div class="legend-item">
+                <div class="legend-color" style="background:rgba(239, 68, 68, 0.45); border:1px solid #ef4444;"></div>
+                Simulated Outburst Velocity Channel
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right Panel: IoT Telemetry & Sensor Cards -->
+        <div class="panel-right">
+
+          <div class="panel-card">
+            <div class="panel-header">
+              <span class="panel-title"><i class="fa-solid fa-tower-broadcast"></i> IoT EWS Sensor Network</span>
+              <span style="font-size:0.75rem; color:var(--accent-cyan);"><i class="fa-solid fa-satellite-dish"></i>
+                INSAT Telemetry</span>
+            </div>
+            <div class="sensor-list-container" id="sensor-cards-container">
+              <!-- Dynamically populated by app.js -->
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-header">
+              <span class="panel-title"><i class="fa-solid fa-chart-line"></i> Real-time Water Stage Telemetry</span>
+            </div>
+            <div style="height:220px; position:relative;">
+              <canvas id="chart-telemetry"></canvas>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Multi-Lake Outburst Flow & Velocity Prediction Matrix Section -->
+      <div class="panel-card" style="margin-top:20px;">
+        <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <span class="panel-title">
+            <i class="fa-solid fa-table-list" style="color:var(--accent-cyan);"></i> Multi-Lake Outburst Flow &amp; Velocity Prediction Matrix (All 15 Mapped Lakes)
+          </span>
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <div style="position:relative;">
+              <input type="text" id="matrix-search-input" class="table-search-input" placeholder="Search lake name or code..." onkeyup="window.ManganApp.renderMultiLakeVelocityMatrix()">
+              <i class="fa-solid fa-magnifying-glass" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:0.8rem; pointer-events:none;"></i>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <label style="font-size:0.8rem; color:var(--text-muted); font-weight:bold;">Sort By:</label>
+              <select id="velocity-matrix-sort" onchange="window.ManganApp.renderMultiLakeVelocityMatrix(this.value)"
+                style="background:var(--bg-primary); color:#fff; border:1px solid var(--accent-cyan); padding:5px 8px; border-radius:6px; font-size:0.8rem; cursor:pointer;">
+                <option value="VELOCITY_DESC">Highest Flow Velocity (m/s)</option>
+                <option value="DISCHARGE_DESC">Highest Peak Discharge (Qp)</option>
+                <option value="ETA_ASC">Shortest Arrival ETA (Mins)</option>
+                <option value="FAHP_RANK">FAHP Hazard Rank (#1 to #15)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div id="multi-lake-velocity-matrix-container">
+          <!-- Populated by app.js renderMultiLakeVelocityMatrix -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 2: Hydrological & Outburst Hydrograph -->
+    <div class="tab-pane" id="tab-hydrology">
+      <div class="panel-card">
+        <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <span class="panel-title"><i class="fa-solid fa-water"></i> Robertson et al. (2023) Dual-Axis Outburst Discharge &amp; Flow Velocity Hydrograph</span>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <select id="hydro-target-lake" onchange="window.ManganApp.selectAndSimulateLake(this.value)"
+              style="background:var(--bg-primary); color:#fff; border:1px solid var(--accent-cyan); padding:6px 10px; border-radius:6px; font-size:0.82rem; font-weight:bold; cursor:pointer;">
+              <option value="LAKE_SOUTH_LHONAK">[Lake-48] South Lhonak Lake</option>
+              <option value="LAKE_EAST_GURUDONGMAR">[Lake-22] East Upper Gurudongmar Lake</option>
+              <option value="LAKE_PUSPA">[Lake-157] Puspa Lake</option>
+              <option value="LAKE_KHANGCHUNG">[Lake-38] Khangchung Tsho</option>
+              <option value="LAKE_MEMENCHO_KUPUK">[Lake-216] Memencho Lake Kupuk</option>
+              <option value="LAKE_123">[Lake-123] Glacial Lake 123</option>
+              <option value="LAKE_NORTH_LHONAK">[Lake-02] North Lhonak Lake</option>
+              <option value="LAKE_98">[Lake-98] Emergent Glacial Lake 98</option>
+              <option value="LAKE_107">[Lake-107] Emergent Glacial Lake 107</option>
+              <option value="LAKE_68">[Lake-68] Emergent Lake 68</option>
+              <option value="LAKE_GURUDONGMAR_MAIN">[Lake-101] Main Gurudongmar Lake</option>
+              <option value="LAKE_120">[Lake-120] Glacial Lake 120</option>
+              <option value="LAKE_HANGU_220">[Lake-220] Hangu Lake</option>
+              <option value="LAKE_346">[Lake-346] Glacial Lake 346</option>
+              <option value="LAKE_55">[Lake-55] Glacial Lake 55</option>
+            </select>
+            <button class="btn-secondary" onclick="window.ManganApp.exportDataCSV()">
+              <i class="fa-solid fa-download"></i> Export Simulation Data (CSV)
+            </button>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:20px; margin-bottom:20px;">
+          <div style="height:380px; position:relative; background:rgba(0,0,0,0.2); border-radius:8px; padding:10px;">
+            <canvas id="chart-hydrograph"></canvas>
+          </div>
+
+          <div
+            style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:8px; padding:16px;">
+            <h4 style="color:var(--accent-blue); margin-bottom:10px; font-family:var(--font-heading)">Robertson et al.
+              (2023) Model Spec</h4>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:8px;">
+              <strong>Model Type:</strong> GR4J Rainfall-Runoff + ARMA(2,1) Autocorrelation Quantile Mapping
+            </p>
+            <div
+              style="font-size:0.8rem; font-family:var(--font-mono); color:var(--text-main); background:rgba(0,0,0,0.4); padding:10px; border-radius:6px; margin-bottom:12px;">
+              Production Capacity X1: 380 mm<br>
+              Groundwater Exchange X2: -0.85 mm<br>
+              Routing Capacity X3: 120 mm<br>
+              Unit Hydrograph Peak X4: 1.4 Days<br>
+              ARMA Phi1: 0.72 | Phi2: -0.18 | Theta1: 0.35
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-muted);">
+              Preserves daily and multi-day autocorrelation structures, preventing underestimation of 95th and 99th
+              streamflow percentiles during extreme GLOF surges.
+            </p>
+            <div style="margin-top:12px; padding:10px; background:rgba(234,179,8,0.1); border:1px solid rgba(234,179,8,0.3); border-radius:6px; font-size:0.75rem; color:#fde047;">
+              <i class="fa-solid fa-eye-slash"></i> <strong>Baseflow Series Notice:</strong> The Robertson GR4J Baseflow hydrograph series is hidden pending supervisory calibration with observed Central Water Commission (CWC) gauge station data.
+            </div>
+          </div>
+        </div>
+
+        <!-- Predicted Impacted Settlement Table -->
+        <h4 style="color:#fff; font-family:var(--font-heading); margin-bottom:10px;"><i
+            class="fa-solid fa-list-check"></i> Predicted Downstream Impact Schedule (Teesta River Corridor)</h4>
+        <div style="overflow-x:auto;">
+          <table class="risk-table">
+            <thead>
+              <tr>
+                <th>Location / Settlement</th>
+                <th>Hazard Status</th>
+                <th>Wave Arrival (ETA)</th>
+                <th>Peak Flow Rate (Qp)</th>
+                <th>Water Stage Surge</th>
+                <th>Population</th>
+                <th>Designated Safe Shelter</th>
+              </tr>
+            </thead>
+            <tbody id="impact-table-body">
+              <!-- Dynamically rendered -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- All Glacial Lakes Outburst Flow & Velocity Comparison Matrix -->
+        <h4 style="color:var(--accent-cyan); font-family:var(--font-heading); margin-top:24px; margin-bottom:10px;">
+          <i class="fa-solid fa-gauge-high"></i> Comparative Outburst Flow Velocity &amp; Discharge Summary (All 15 Mapped Lakes)
+        </h4>
+        <div id="multi-lake-velocity-matrix-hydrology">
+          <!-- Populated by app.js renderMultiLakeVelocityMatrix -->
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 3: Vulnerability & Risk Matrix (Gaikwad et al. 2025) -->
+    <div class="tab-pane" id="tab-vulnerability">
+      <div class="panel-card">
+
+        <!-- Research Paper Header Banner -->
+        <div
+          style="background:linear-gradient(135deg, rgba(30,58,138,0.4), rgba(15,23,42,0.8)); border:1px solid rgba(59,130,246,0.3); border-radius:8px; padding:16px; margin-bottom:20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <h3 style="color:#60a5fa; font-family:var(--font-heading); margin-bottom:4px;">
+                <i class="fa-solid fa-book-bookmark"></i> Gaikwad, Tiwari, Kumar, &amp; Guha (2025) Research Framework
+              </h3>
+              <p style="font-size:0.85rem; color:var(--text-muted);">
+                <em>"Hazard, and risk modelling of glacial lakes in the Sikkim Himalaya: Integrating qualitative and
+                  quantitative approaches for hazard assessment"</em> (Geomorphology, Vol. 471)
+              </p>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <span
+                style="background:rgba(239,68,68,0.2); color:#fca5a5; border:1px solid rgba(239,68,68,0.4); padding:4px 10px; border-radius:6px; font-size:0.8rem; font-weight:bold;">
+                440 Mapped Glacial Lakes (2020)
+              </span>
+              <span
+                style="background:rgba(249,115,22,0.2); color:#fdba74; border:1px solid rgba(249,115,22,0.4); padding:4px 10px; border-radius:6px; font-size:0.8rem; font-weight:bold;">
+                51 FAHP Susceptible Lakes
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- FAHP Causative Criteria & Weights Breakdown -->
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:24px;">
+
+          <div
+            style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:8px; padding:16px;">
+            <h4 style="color:var(--accent-cyan); font-family:var(--font-heading); margin-bottom:12px;">
+              <i class="fa-solid fa-weight-hanging"></i> FAHP Causative Criteria Weights (Table 2)
+            </h4>
+            <div id="fahp-weights-container" style="display:flex; flex-direction:column; gap:8px;">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <div
+            style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:8px; padding:16px;">
+            <h4 style="color:var(--accent-cyan); font-family:var(--font-heading); margin-bottom:12px;">
+              <i class="fa-solid fa-chart-pie"></i> Hazard &amp; Risk Classification Distribution
+            </h4>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+
+              <!-- Hazard distribution card -->
+              <div
+                style="background:rgba(0,0,0,0.3); padding:12px; border-radius:6px; border:1px solid rgba(255,255,255,0.05);">
+                <span style="font-size:0.8rem; font-weight:bold; color:var(--text-muted);">GLOF HAZARD LEVELS</span>
+                <div style="font-size:0.8rem; margin-top:8px;">
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                    <span style="color:#ef4444; font-weight:bold;">Very High:</span> <span>7 Lakes (13.7%)</span>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                    <span style="color:#f97316; font-weight:bold;">High:</span> <span>9 Lakes (17.6%)</span>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                    <span style="color:#eab308; font-weight:bold;">Medium:</span> <span>10 Lakes (19.6%)</span>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                    <span style="color:#10b981; font-weight:bold;">Low / Very Low:</span> <span>25 Lakes (49.0%)</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Risk distribution card -->
+              <div
+                style="background:rgba(0,0,0,0.3); padding:12px; border-radius:6px; border:1px solid rgba(255,255,255,0.05);">
+                <span style="font-size:0.8rem; font-weight:bold; color:var(--text-muted);">MC-LCP RISK CATEGORIES</span>
+                <div style="font-size:0.8rem; margin-top:8px;">
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                    <span style="color:#b91c1c; font-weight:bold;">Very High Risk:</span> <span>6 Lakes</span>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                    <span style="color:#c2410c; font-weight:bold;">High Risk:</span> <span>10 Lakes</span>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                    <span style="color:#ca8a04; font-weight:bold;">Medium Risk:</span> <span>24 Lakes</span>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                    <span style="color:#059669; font-weight:bold;">Low / Very Low:</span> <span>11 Lakes</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Glacial Lakes FAHP Inventory Table -->
+        <div style="margin-top:10px;">
+          <div
+            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+            <h4 style="color:#fff; font-family:var(--font-heading);">
+              <i class="fa-solid fa-table-list"></i> Glacial Lakes Inventory &amp; FAHP Hazard Evaluation
+            </h4>
+            <div style="display:flex; gap:8px;">
+              <select id="matrix-filter-hazard" onchange="window.ManganApp.filterRiskMatrixTable()"
+                style="background:var(--bg-primary); color:#fff; border:1px solid var(--border-color); padding:6px 10px; border-radius:6px; font-size:0.8rem;">
+                <option value="ALL">All Hazard Levels</option>
+                <option value="VERY_HIGH">Very High Hazard</option>
+                <option value="HIGH">High Hazard</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <div id="risk-matrix-container">
+              <!-- JS rendered multi-lake research table -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 4: Governance Public Grievance & Audit Log -->
+    <div class="tab-pane" id="tab-governance">
+      <div class="panel-card">
+        <div class="panel-header">
+          <span class="panel-title"><i class="fa-solid fa-clipboard-check"></i> Public Grievance &amp; 3rd-Party Audit
+            Framework</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+          <!-- Public Grievance Submission Form -->
+          <div
+            style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:8px; padding:18px; display:flex; flex-direction:column; gap:12px;">
+            <h4 style="color:var(--accent-blue); font-family:var(--font-heading);"><i class="fa-solid fa-bullhorn"></i>
+              Submit Public Grievance / Sensor Field Issue</h4>
+            <p style="font-size:0.8rem; color:var(--text-muted);">Public transparency and 3rd-party auditing prevent
+              institutional fragmentation and EWS maintenance delays.</p>
+
+            <div class="sim-form-group">
+              <label>Grievance Details / Sensor Location Report:</label>
+              <textarea id="grievance-text" rows="4"
+                style="width:100%; background:var(--bg-primary); border:1px solid var(--border-color); color:#fff; border-radius:6px; padding:10px; font-family:var(--font-body);"
+                placeholder="Describe EWS sensor malfunction, bridge damage, or shelter supply shortage..."></textarea>
+            </div>
+
+            <button class="btn-primary" onclick="window.ManganApp.submitPublicGrievance()">
+              <i class="fa-solid fa-paper-plane"></i> Submit to Immutable Audit Log
+            </button>
+          </div>
+
+          <!-- Audit Log Trail List -->
+          <div>
+            <h4 style="color:#fff; font-family:var(--font-heading); margin-bottom:12px;"><i
+                class="fa-solid fa-list-ol"></i> System Audit Log &amp; 3rd-Party Verification Trail</h4>
+            <div class="audit-list" id="audit-log-container">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Official Governmental Report Download & Dossier Card -->
+        <div style="margin-top:24px; background:linear-gradient(135deg, rgba(30,58,138,0.35), rgba(15,23,42,0.85)); border:1px solid rgba(59,130,246,0.4); border-radius:8px; padding:18px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div>
+              <span style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1px solid rgba(59,130,246,0.5); padding:3px 8px; border-radius:4px; font-size:0.75rem; font-weight:bold; letter-spacing:0.5px;">
+                OFFICIAL REPORT REF: SSDMA/MNG/GLOF-EWS/2026/REP-001
+              </span>
+              <h4 style="color:#fff; font-family:var(--font-heading); margin-top:6px; margin-bottom:4px;">
+                <i class="fa-solid fa-file-shield" style="color:var(--accent-cyan);"></i> Official Governmental Dossier &amp; Technical System Report
+              </h4>
+              <p style="font-size:0.82rem; color:var(--text-muted); margin:0;">
+                Comprehensive glacio-hydrological, engineering architecture, and administrative disaster resilience whitepaper submitted to SSDMA, NDMA, CWC, and District Collectorate Mangan.
+              </p>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <a href="MANGAN_DISTRICT_GLOF_GOVERNMENTAL_REPORT.md" target="_blank" class="btn-primary" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                <i class="fa-solid fa-book-open"></i> View Markdown Report
+              </a>
+              <a href="Mangan_District_GLOF_Risk_And_EWS_Report.xlsx" download class="btn-secondary" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                <i class="fa-solid fa-file-excel" style="color:#10b981;"></i> Download Excel Dossier
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Emergency Broadcast Modal (Draft Preview Only) -->
+  <div class="modal-backdrop" id="broadcast-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <span class="modal-title" style="color:var(--alert-critical)"><i class="fa-solid fa-file-pen"></i>
+          Emergency Alert Broadcast Template (Draft Simulation Only)</span>
+        <button class="btn-close-modal" onclick="window.ManganApp.closeEmergencyBroadcastModal()">&times;</button>
+      </div>
+      <div style="font-size:0.9rem; color:var(--text-main);">
+        <div class="simulation-safety-alert" style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); padding:12px; border-radius:6px; color:#fca5a5; font-size:0.85rem; margin-bottom:12px;">
+          <div style="display:flex; gap:8px; align-items:flex-start;">
+            <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444; font-size:1.1rem; margin-top:2px;"></i>
+            <div>
+              <strong>SAFETY NOTICE — DOES NOT SEND ANYTHING:</strong><br>
+              This portal is an academic research demonstration. Clicking below does not trigger any satellite SMS, sirens, or official transmissions. It only records a local simulation log entry for reviewer inspection.
+            </div>
+          </div>
+        </div>
+        <p style="font-size:0.85rem; color:var(--text-muted);">
+          Simulated draft broadcast payload for downstream warning nodes:
+        </p>
+        <div style="margin-top:8px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); padding:12px; border-radius:6px; font-size:0.82rem; font-family:var(--font-mono);">
+          <strong>TARGET COMMUNITIES:</strong> Lachen, Lachung, Chungthang, Mangan HQ, Dzongu, Dikchu.<br>
+          <strong>DRAFT INSTRUCTION:</strong> Immediate precautionary evacuation to designated hilltop safe havens.<br>
+          <strong>DISCLAIMER:</strong> Academic Simulation Only — No External Transmission.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="window.ManganApp.closeEmergencyBroadcastModal()">Close</button>
+        <button class="btn-emergency-broadcast draft-action-btn"
+          onclick="window.ManganApp.transmitEmergencyBroadcast();">
+          <i class="fa-solid fa-file-lines"></i> Record Simulated Draft Log
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Scripts -->
+  <script src="data.js"></script>
+  <script src="hydrology.js"></script>
+  <script src="map.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
