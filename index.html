@@ -6,6 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mangan District GLOF Risk &amp; Early Warning Portal | Academic Research Prototype</title>
 
+  <meta name="description" content="Mangan District (North Sikkim) GLOF Risk, Hydrodynamic Breach Simulator & Early Warning Study Portal based on Gaikwad et al. (2025).">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏔️</text></svg>">
+
   <!-- External CDNs: FontAwesome, Leaflet, Chart.js -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -61,11 +64,11 @@
   <div class="command-ticker-bar">
     <div class="ticker-item">
       <i class="fa-solid fa-layer-group" style="color:var(--accent-blue);"></i>
-      <span>Mapped Inventory: <strong>440 Lakes</strong> <span class="accent-val">(30.71 km²)</span></span>
+      <span>NDMA Category 'A': <strong>16 High Risk Lakes</strong> <span class="accent-val">(SSDMA Official)</span></span>
     </div>
     <div class="ticker-item">
       <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i>
-      <span>FAHP Evaluated: <strong>51 Lakes</strong> <span style="color:#ef4444; font-weight:bold;">(7 Very High)</span></span>
+      <span>Risk Category: <strong>16 Critical Glacial Lakes</strong> <span style="color:#ef4444; font-weight:bold;">(Highest Priority)</span></span>
     </div>
     <div class="ticker-item">
       <i class="fa-solid fa-tower-cell" style="color:#eab308;"></i>
@@ -73,7 +76,7 @@
     </div>
     <div class="ticker-item">
       <i class="fa-solid fa-bullseye" style="color:var(--accent-cyan);"></i>
-      <span>Primary Risk Target: <strong>South Lhonak Lake</strong> <span class="accent-val">[Lake-48 | FAHP #1]</span></span>
+      <span>Primary Risk Target: <strong>South Lhonak Lake</strong> <span class="accent-val">[NDMA #6 | Cat 'A']</span></span>
     </div>
     <div class="ticker-item">
       <i class="fa-solid fa-flask" style="color:#38bdf8;"></i>
@@ -84,16 +87,16 @@
   <!-- Primary Navigation Tabs -->
   <nav class="nav-tab-bar">
     <button class="tab-btn active" data-tab="tab-map-ews">
-      <i class="fa-solid fa-map-location-dot"></i> Live GIS Map &amp; Multi-Lake EWS
+      <i class="fa-solid fa-map-location-dot"></i> Live GIS Map &amp; Multi-Lake EWS <span class="kbd-badge">1</span>
     </button>
     <button class="tab-btn" data-tab="tab-hydrology">
-      <i class="fa-solid fa-chart-line"></i> Hydrological &amp; Outburst Hydrograph
+      <i class="fa-solid fa-chart-line"></i> Hydrological &amp; Outburst Hydrograph <span class="kbd-badge">2</span>
     </button>
     <button class="tab-btn" data-tab="tab-vulnerability">
-      <i class="fa-solid fa-shield-halved"></i> 51 Glacial Lakes FAHP Risk Matrix (Gaikwad 2025)
+      <i class="fa-solid fa-shield-halved"></i> 16 High Risk Glacial Lakes (NDMA Category 'A') <span class="kbd-badge">3</span>
     </button>
     <button class="tab-btn" data-tab="tab-governance">
-      <i class="fa-solid fa-clipboard-check"></i> Public Grievance &amp; Audit Log
+      <i class="fa-solid fa-clipboard-check"></i> Public Grievance &amp; Audit Log <span class="kbd-badge">4</span>
     </button>
   </nav>
 
@@ -107,18 +110,18 @@
         <!-- Left Panel: Multi-Lake Selection & GLOF Simulator Controls -->
         <div class="panel-left">
 
-          <!-- District & Research Summary -->
+          <!-- District & NDMA Classification Summary -->
           <div class="panel-card">
             <div class="panel-header">
-              <span class="panel-title"><i class="fa-solid fa-landmark"></i> Sikkim Glacial Lakes Inventory</span>
+              <span class="panel-title"><i class="fa-solid fa-landmark"></i> High Risk Glacial Lakes (NDMA Category 'A')</span>
             </div>
             <div style="font-size:0.82rem; color:var(--text-muted);">
-              <p style="margin:2px 0;"><strong>Mapped Lakes (2020):</strong> 440 Glacial Lakes (30.71 km²)</p>
-              <p style="margin:2px 0;"><strong>GLOF Prone Evaluated:</strong> 51 Lakes (≥ 0.02 km²)</p>
-              <p style="margin:2px 0;"><strong>Very High Hazard Lakes:</strong> <span
-                  style="color:#ef4444; font-weight:bold;">7 Lakes (13.7%)</span></p>
-              <p style="margin:2px 0;"><strong>Very High Risk Lakes:</strong> <span
-                  style="color:#b91c1c; font-weight:bold;">6 Lakes (MC-LCP Model)</span></p>
+              <p style="margin:2px 0;"><strong>State Inventory:</strong> 16 High Risk Glacial Lakes</p>
+              <p style="margin:2px 0;"><strong>Classification:</strong> NDMA Category 'A' (Highest Priority)</p>
+              <p style="margin:2px 0;"><strong>Authority:</strong> <span
+                  style="color:#ef4444; font-weight:bold;">SSDMA &amp; NDMA Fig. 11 Register</span></p>
+              <p style="margin:2px 0;"><strong>Critical Basins:</strong> <span
+                  style="color:#38bdf8; font-weight:bold;">Lhonak, Chhombo Chu, Lashar, Chonburing</span></p>
             </div>
           </div>
 
@@ -131,7 +134,7 @@
             <!-- Target Glacial Lake Selector -->
             <div class="sim-form-group" style="margin-bottom:12px;">
               <label style="font-weight:bold; color:var(--accent-cyan); display:block; margin-bottom:4px;">
-                <i class="fa-solid fa-water"></i> Target Glacial Lake (Gaikwad et al. 2025):
+                <i class="fa-solid fa-water"></i> Target Glacial Lake (NDMA Category 'A'):
               </label>
               <select id="sim-target-lake"
                 style="width:100%; background:var(--bg-primary); color:#fff; border:1px solid var(--accent-cyan); padding:8px; border-radius:6px; font-family:var(--font-body); font-size:0.85rem; font-weight:bold; cursor:pointer;">
@@ -231,40 +234,43 @@
           <div class="map-panel">
             <div id="leaflet-map"></div>
 
+            <!-- Map Quick Action Toolbar -->
+            <div class="map-quick-toolbar">
+              <button class="btn-map-tool" id="btn-map-fullscreen" onclick="window.ManganMapManager.toggleFullscreenMap()" title="Toggle Fullscreen GIS">
+                <i class="fa-solid fa-expand"></i>
+              </button>
+              <button class="btn-map-tool" onclick="window.ManganMapManager.focusCoordinate(27.8500, 88.5200, 10, 'Mangan District Overview')" title="Reset Map View">
+                <i class="fa-solid fa-crosshairs"></i>
+              </button>
+            </div>
+
             <!-- Layer Control & Hazard Filter Overlay -->
             <div class="map-control-overlay">
               <span class="overlay-section-header">
-                <i class="fa-brands fa-google" style="color:#4285F4;"></i> Google Maps (Authority Mode)
+                <i class="fa-solid fa-layer-group"></i> Basemap Layers
               </span>
-              <button class="layer-toggle-btn active" data-basemap="Google Hybrid" onclick="window.ManganMapManager.switchBaseMap('Google Hybrid', this)">
-                <i class="fa-brands fa-google" style="color:#34A853;"></i> Google Hybrid
+              <button class="layer-toggle-btn active" data-basemap="ESRI Satellite" onclick="window.ManganMapManager.switchBaseMap('ESRI Satellite', this)">
+                <i class="fa-solid fa-globe" style="color:#38bdf8;"></i> ESRI Satellite
                 <span class="badge-recom">RECOMMENDED</span>
               </button>
-              <button class="layer-toggle-btn" data-basemap="Google Terrain" onclick="window.ManganMapManager.switchBaseMap('Google Terrain', this)">
-                <i class="fa-solid fa-mountain-sun" style="color:#FBBC05;"></i> Google Terrain (Himalaya)
+              <button class="layer-toggle-btn" data-basemap="CartoDB Voyager" onclick="window.ManganMapManager.switchBaseMap('CartoDB Voyager', this)">
+                <i class="fa-solid fa-mountain" style="color:#34d399;"></i> CartoDB Topo
               </button>
-              <button class="layer-toggle-btn" data-basemap="Google Streets" onclick="window.ManganMapManager.switchBaseMap('Google Streets', this)">
-                <i class="fa-solid fa-road" style="color:#4285F4;"></i> Google Roads &amp; Towns
+              <button class="layer-toggle-btn" data-basemap="CartoDB Dark" onclick="window.ManganMapManager.switchBaseMap('CartoDB Dark', this)">
+                <i class="fa-solid fa-moon" style="color:#a78bfa;"></i> Tactical Dark
               </button>
-              <button class="layer-toggle-btn" data-basemap="Google Satellite" onclick="window.ManganMapManager.switchBaseMap('Google Satellite', this)">
-                <i class="fa-solid fa-satellite" style="color:#EA4335;"></i> Google Satellite (Pure)
+              <button class="layer-toggle-btn" data-basemap="Topographic" onclick="window.ManganMapManager.switchBaseMap('Topographic', this)">
+                <i class="fa-solid fa-mountain-sun" style="color:#fbbf24;"></i> Elevation Contours
+              </button>
+              <button class="layer-toggle-btn" data-basemap="OpenStreetMap" onclick="window.ManganMapManager.switchBaseMap('OpenStreetMap', this)">
+                <i class="fa-solid fa-map" style="color:#60a5fa;"></i> OpenStreetMap
+              </button>
+              <button class="layer-toggle-btn" data-basemap="Google Hybrid" onclick="window.ManganMapManager.switchBaseMap('Google Hybrid', this)">
+                <i class="fa-brands fa-google" style="color:#4285F4;"></i> Google Hybrid
               </button>
 
               <button class="layer-toggle-btn btn-open-external-gmap" onclick="window.ManganMapManager.openCurrentInGoogleMaps()" title="Open live coordinate footprint directly in official Google Maps">
                 <i class="fa-solid fa-arrow-up-right-from-square"></i> Open in Google Maps ↗
-              </button>
-
-              <span class="overlay-section-header" style="margin-top:6px;">
-                <i class="fa-solid fa-layer-group"></i> Alternate GIS Basemaps
-              </span>
-              <button class="layer-toggle-btn" data-basemap="OpenStreetMap" onclick="window.ManganMapManager.switchBaseMap('OpenStreetMap', this)">
-                <i class="fa-solid fa-map"></i> OSM HOT (Disaster Relief)
-              </button>
-              <button class="layer-toggle-btn" data-basemap="ESRI Satellite" onclick="window.ManganMapManager.switchBaseMap('ESRI Satellite', this)">
-                <i class="fa-solid fa-globe"></i> ESRI World Imagery
-              </button>
-              <button class="layer-toggle-btn" data-basemap="Topographic" onclick="window.ManganMapManager.switchBaseMap('Topographic', this)">
-                <i class="fa-solid fa-mountain"></i> ESRI Topo Contours
               </button>
 
               <span class="overlay-section-header" style="margin-top:8px;">
@@ -350,12 +356,12 @@
           </span>
           <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
             <div style="position:relative;">
-              <input type="text" id="matrix-search-input" class="table-search-input" placeholder="Search lake name or code..." onkeyup="window.ManganApp.renderMultiLakeVelocityMatrix()">
+              <input type="text" id="matrix-search-input" class="table-search-input" placeholder="Search lake name or code..." oninput="window.ManganApp.renderMultiLakeVelocityMatrix()">
               <i class="fa-solid fa-magnifying-glass" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:0.8rem; pointer-events:none;"></i>
             </div>
             <div style="display:flex; align-items:center; gap:6px;">
               <label style="font-size:0.8rem; color:var(--text-muted); font-weight:bold;">Sort By:</label>
-              <select id="velocity-matrix-sort" onchange="window.ManganApp.renderMultiLakeVelocityMatrix(this.value)"
+              <select id="velocity-matrix-sort" onchange="window.ManganApp.renderMultiLakeVelocityMatrix()"
                 style="background:var(--bg-primary); color:#fff; border:1px solid var(--accent-cyan); padding:5px 8px; border-radius:6px; font-size:0.8rem; cursor:pointer;">
                 <option value="VELOCITY_DESC">Highest Flow Velocity (m/s)</option>
                 <option value="DISCHARGE_DESC">Highest Peak Discharge (Qp)</option>
@@ -384,17 +390,8 @@
               <option value="LAKE_EAST_GURUDONGMAR">[Lake-22] East Upper Gurudongmar Lake</option>
               <option value="LAKE_PUSPA">[Lake-157] Puspa Lake</option>
               <option value="LAKE_KHANGCHUNG">[Lake-38] Khangchung Tsho</option>
-              <option value="LAKE_MEMENCHO_KUPUK">[Lake-216] Memencho Lake Kupuk</option>
-              <option value="LAKE_123">[Lake-123] Glacial Lake 123</option>
               <option value="LAKE_NORTH_LHONAK">[Lake-02] North Lhonak Lake</option>
-              <option value="LAKE_98">[Lake-98] Emergent Glacial Lake 98</option>
-              <option value="LAKE_107">[Lake-107] Emergent Glacial Lake 107</option>
-              <option value="LAKE_68">[Lake-68] Emergent Lake 68</option>
               <option value="LAKE_GURUDONGMAR_MAIN">[Lake-101] Main Gurudongmar Lake</option>
-              <option value="LAKE_120">[Lake-120] Glacial Lake 120</option>
-              <option value="LAKE_HANGU_220">[Lake-220] Hangu Lake</option>
-              <option value="LAKE_346">[Lake-346] Glacial Lake 346</option>
-              <option value="LAKE_55">[Lake-55] Glacial Lake 55</option>
             </select>
             <button class="btn-secondary" onclick="window.ManganApp.exportDataCSV()">
               <i class="fa-solid fa-download"></i> Export Simulation Data (CSV)
@@ -475,21 +472,20 @@
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
             <div>
               <h3 style="color:#60a5fa; font-family:var(--font-heading); margin-bottom:4px;">
-                <i class="fa-solid fa-book-bookmark"></i> Gaikwad, Tiwari, Kumar, &amp; Guha (2025) Research Framework
+                <i class="fa-solid fa-shield-halved"></i> High Risk Glacial Lakes in Sikkim (NDMA Category 'A' Lakes)
               </h3>
               <p style="font-size:0.85rem; color:var(--text-muted);">
-                <em>"Hazard, and risk modelling of glacial lakes in the Sikkim Himalaya: Integrating qualitative and
-                  quantitative approaches for hazard assessment"</em> (Geomorphology, Vol. 471)
+                <em>Categorized by NDMA, Sikkim State Disaster Management Authority (SSDMA) &amp; Sikkim State Council of Science &amp; Technology (Figure 11 Register)</em>
               </p>
             </div>
             <div style="display:flex; gap:10px;">
               <span
                 style="background:rgba(239,68,68,0.2); color:#fca5a5; border:1px solid rgba(239,68,68,0.4); padding:4px 10px; border-radius:6px; font-size:0.8rem; font-weight:bold;">
-                440 Mapped Glacial Lakes (2020)
+                16 NDMA Category 'A' Lakes
               </span>
               <span
                 style="background:rgba(249,115,22,0.2); color:#fdba74; border:1px solid rgba(249,115,22,0.4); padding:4px 10px; border-radius:6px; font-size:0.8rem; font-weight:bold;">
-                51 FAHP Susceptible Lakes
+                SSDMA / NDMA Official Action Portfolio
               </span>
             </div>
           </div>
@@ -511,26 +507,26 @@
           <div
             style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:8px; padding:16px;">
             <h4 style="color:var(--accent-cyan); font-family:var(--font-heading); margin-bottom:12px;">
-              <i class="fa-solid fa-chart-pie"></i> Hazard &amp; Risk Classification Distribution
+              <i class="fa-solid fa-chart-pie"></i> Official Risk &amp; Basin Distribution
             </h4>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
 
               <!-- Hazard distribution card -->
               <div
                 style="background:rgba(0,0,0,0.3); padding:12px; border-radius:6px; border:1px solid rgba(255,255,255,0.05);">
-                <span style="font-size:0.8rem; font-weight:bold; color:var(--text-muted);">GLOF HAZARD LEVELS</span>
+                <span style="font-size:0.8rem; font-weight:bold; color:var(--text-muted);">NDMA PRIORITY STATUS</span>
                 <div style="font-size:0.8rem; margin-top:8px;">
                   <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                    <span style="color:#ef4444; font-weight:bold;">Very High:</span> <span>7 Lakes (13.7%)</span>
+                    <span style="color:#ef4444; font-weight:bold;">Category 'A':</span> <span>16 High Risk Lakes (100%)</span>
                   </div>
                   <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                    <span style="color:#f97316; font-weight:bold;">High:</span> <span>9 Lakes (17.6%)</span>
+                    <span style="color:#f97316; font-weight:bold;">Critical Impact:</span> <span>North &amp; West Sikkim</span>
                   </div>
                   <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                    <span style="color:#eab308; font-weight:bold;">Medium:</span> <span>10 Lakes (19.6%)</span>
+                    <span style="color:#eab308; font-weight:bold;">Key Corridors:</span> <span>Lhonak, Chhombo, Lashar</span>
                   </div>
                   <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                    <span style="color:#10b981; font-weight:bold;">Low / Very Low:</span> <span>25 Lakes (49.0%)</span>
+                    <span style="color:#10b981; font-weight:bold;">Downstream:</span> <span>Teesta Basin Towns &amp; Dams</span>
                   </div>
                 </div>
               </div>
@@ -538,19 +534,19 @@
               <!-- Risk distribution card -->
               <div
                 style="background:rgba(0,0,0,0.3); padding:12px; border-radius:6px; border:1px solid rgba(255,255,255,0.05);">
-                <span style="font-size:0.8rem; font-weight:bold; color:var(--text-muted);">MC-LCP RISK CATEGORIES</span>
+                <span style="font-size:0.8rem; font-weight:bold; color:var(--text-muted);">SSDMA EWS MONITORING</span>
                 <div style="font-size:0.8rem; margin-top:8px;">
                   <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                    <span style="color:#b91c1c; font-weight:bold;">Very High Risk:</span> <span>6 Lakes</span>
+                    <span style="color:#ef4444; font-weight:bold;">Primary Focus:</span> <span>Lake #6 (South Lhonak)</span>
                   </div>
                   <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                    <span style="color:#c2410c; font-weight:bold;">High Risk:</span> <span>10 Lakes</span>
+                    <span style="color:#f97316; font-weight:bold;">Gurudongmar:</span> <span>Lakes #12, #13, #14</span>
                   </div>
                   <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                    <span style="color:#ca8a04; font-weight:bold;">Medium Risk:</span> <span>24 Lakes</span>
+                    <span style="color:#eab308; font-weight:bold;">Headwaters:</span> <span>Lake #15 (Khangchung Chho)</span>
                   </div>
                   <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                    <span style="color:#059669; font-weight:bold;">Low / Very Low:</span> <span>11 Lakes</span>
+                    <span style="color:#38bdf8; font-weight:bold;">West Sikkim:</span> <span>Lakes #1, #2, #3</span>
                   </div>
                 </div>
               </div>
